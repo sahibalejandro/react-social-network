@@ -1,9 +1,38 @@
 import React from 'react';
+import axios from 'axios';
 
 class Wall extends React.Component {
+    state = {
+        publications: [],
+        errorLoadingPublications: false,
+        publicationsLoaded: false,
+    };
+
+    componentDidMount() {
+        this.loadPublications();
+    }
+
+    loadPublications = async () => {
+        try {
+            const res = await axios.get('/api/publications');
+            this.setState({publications: res.data});
+        } catch (err) {
+            this.setState({errorLoadingPublications: true});
+        }
+
+        this.setState({publicationsLoaded: true});
+    };
 
     renderPublications = () => {
-        return this.props.publications.map(publication =>
+        if (! this.state.publicationsLoaded) {
+            return <p>Loading publications...</p>;
+        }
+
+        if (this.state.errorLoadingPublications) {
+            return <p>Can't load publications, try later.</p>;
+        }
+
+        return this.state.publications.map(publication =>
             <div key={publication._id} className="publication">
                 <p>{publication.body}</p>
             </div>
@@ -12,11 +41,8 @@ class Wall extends React.Component {
 
     render() {
         return (
-            <div className="wall">
-                {this.props.publications.length === 0
-                    ? <p>This wall has no publications, write one!</p>
-                    : this.renderPublications()
-                }
+            <div>
+                {this.renderPublications()}
             </div>
         );
     }

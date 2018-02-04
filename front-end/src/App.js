@@ -1,56 +1,26 @@
-import React, {Component} from 'react';
-import axios from 'axios';
-import Wall from './components/Wall';
+import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
 import Navbar from './components/Navbar';
 import PublicationForm from './components/PublicationForm';
+import Wall from './components/Wall';
+import Login from './components/Login';
+import Register from './components/Register';
 
 class App extends Component {
-    state = {
-        publications: [],
-        errorLoadingPublications: false,
-        publicationsLoaded: false,
-    };
-
-    componentDidMount() {
-        this.loadPublications();
-    }
-
-    loadPublications = async () => {
-        try {
-            const res = await axios.get('/api/publications');
-            this.setState({publications: res.data});
-        } catch (err) {
-            this.setState({errorLoadingPublications: true});
-        }
-
-        this.setState({publicationsLoaded: true});
-    };
-
     handlePublish = (publication) => {
-        this.setState({
-            publications: this.state.publications.concat(publication),
-        });
+        console.log(publication);
     };
 
     render() {
-        const wall = this.state.publicationsLoaded
-            ? <Wall publications={this.state.publications}/>
-            : <p>Loading publications...</p>;
-
         return (
             <div>
                 <Navbar />
                 <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-lg-6">
-                            <PublicationForm onPublish={this.handlePublish}/>
-                        </div>
-                    </div>
-                    <hr/>
-                    {this.state.errorLoadingPublications
-                        ? <p>Error loading publications, try again later.</p>
-                        : wall
-                    }
+                    <PublicationForm onPublish={this.handlePublish}/>
+                    <ProtectedRoute exact path="/" component={Wall} />
+                    <Route path="/login" component={Login} />
+                    <Route path="/register" component={Register} />
                 </div>
             </div>
         );

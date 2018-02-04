@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios';
 
 class PublicationForm extends React.Component {
-
     state = {
         form: {
             body: '',
@@ -41,34 +40,45 @@ class PublicationForm extends React.Component {
     };
 
     render() {
+        if (! this.state.user) {
+            return null;
+        }
+        
         return (
-            <div className="publication-form">
-                <form>
-                    <div className="form-group">
-                        <label htmlFor="body">What's going on?</label>
-                        <textarea
-                            className="form-control"
-                            name="body"
-                            id="body"
-                            onChange={this.handleChange}
-                            value={this.state.form.body}
-                        />
+            <div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div className="publication-form">
+                            <form>
+                                <div className="form-group">
+                                    <label htmlFor="body">What's going on?</label>
+                                    <textarea
+                                        className="form-control"
+                                        name="body"
+                                        id="body"
+                                        onChange={this.handleChange}
+                                        value={this.state.form.body}
+                                    />
+                                </div>
+                        
+                                <button
+                                    className="btn btn-primary"
+                                    type="submit"
+                                    disabled={this.state.publishing}
+                                    onClick={this.handleClick}
+                                >
+                                    Publish
+                                </button>
+                        
+                                {this.state.errorPublishing
+                                    ? <p>Failed to publish your status, try again.</p>
+                                    : null
+                                }
+                            </form>
+                        </div>
                     </div>
-
-                    <button
-                        className="btn btn-primary"
-                        type="submit"
-                        disabled={this.state.publishing}
-                        onClick={this.handleClick}
-                    >
-                        Publish
-                    </button>
-
-                    {this.state.errorPublishing
-                        ? <p>Failed to publish your status, try again.</p>
-                        : null
-                    }
-                </form>
+                </div>
+                <hr/>
             </div>
         );
     }
