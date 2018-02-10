@@ -14,5 +14,6 @@ app.use(bodyParser.json())
 
 // Routes
 app.use(users)
+app.use(publications)
 
 app.listen(process.env.PORT || 4000, () => console.log('Express server runing.'))
